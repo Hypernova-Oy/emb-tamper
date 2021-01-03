@@ -1,0 +1,79 @@
+#!/usr/bin/perl
+
+# Copyright 2016 Vaara-kirjastot
+#
+
+use Modern::Perl;
+use Carp;
+use Getopt::Long qw(:config no_ignore_case);
+use POSIX();
+use Data::Dumper;
+
+use Tamper;
+use Tamper::Config;
+
+my $help;
+my ($doorPin, $pollIntervalMs, $pollCount);
+
+
+GetOptions(
+    'h|help'                      => \$help,
+    'doorPin:i'                   => \$doorPin,
+    'poll:i'                      => \$pollIntervalMs,
+    'pollCount:i'                 => \$pollCount,
+);
+
+my $usage = <<USAGE;
+
+Tamper detection daemon
+Set configs at /etc/emb-tamper/daemon.conf
+or overload here
+
+  -h --help           This HELP!
+
+  --doorPin           The BCM pin detecting door push-button activation, so. is the enclosure lid open or not.
+
+  --poll              How often to poll the GPIO pins for status changes.
+
+  --pollCount         How many times to poll? By default disabled to daemonize the Tamper.
+
+SIGNALS:
+
+Tamper listens to some IPC signals you can use to get information about the running process
+
+SIGUSR1 - Dump the daemon object internals
+
+EXAMPLES:
+
+  tamper
+
+USAGE
+
+if ($help) {
+  print $usage;
+  exit 0;
+}
+
+my $conf = Tamper::Config::makeConfig(
+  $doorPin, $pollIntervalMs,
+);
+my $tamper;
+
+##Introduce signal handlers
+sub gracefullyTerminate {
+  my ($signal) = @_;
+  print "Exiting through signal '$signal'\n";
+  exit(0); #Interrupt the handler to trigger graceful termination, including calling DESTROY on objects.
+}
+$SIG{USR1} = sub {
+  print Data::Dumper::Dumper($tamper);
+};
+$SIG{HUP} = sub {
+  gracefullyTerminate($_[0]);
+};
+$SIG{INT} = sub {
+  gracefullyTerminate($_[0]);
+};
+
+$tamper = Tamper->new($conf);
+$tamper->start($pollCount);

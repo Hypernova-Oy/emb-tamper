@@ -1,0 +1,15 @@
+[Unit]
+Description=Tamper detection daemon
+
+[Service]
+Type=idle
+User=root
+ExecStart=/usr/local/bin/tamper
+
+RestartSec=5s
+Restart=always
+
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target
