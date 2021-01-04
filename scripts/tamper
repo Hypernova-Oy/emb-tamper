@@ -1,19 +1,21 @@
 #!/usr/bin/perl
 
+# Copyright 2021 Hypernova Oy
 # Copyright 2016 Vaara-kirjastot
 #
 
 use Modern::Perl;
 use Carp;
 use Getopt::Long qw(:config no_ignore_case);
-use POSIX();
 use Data::Dumper;
+use JSON::XS;
+use POSIX();
 
 use Tamper;
 use Tamper::Config;
 
 my $help;
-my ($doorPin, $pollIntervalMs, $pollCount);
+my ($doorPin, $pollIntervalMs, $pollCount, $getConfig);
 
 
 GetOptions(
@@ -21,6 +23,7 @@ GetOptions(
     'doorPin:i'                   => \$doorPin,
     'poll:i'                      => \$pollIntervalMs,
     'pollCount:i'                 => \$pollCount,
+    'get-config'                  => \$getConfig,
 );
 
 my $usage = <<USAGE;
@@ -36,6 +39,8 @@ or overload here
   --poll              How often to poll the GPIO pins for status changes.
 
   --pollCount         How many times to poll? By default disabled to daemonize the Tamper.
+
+  --get-config        Outputs all config in JSON
 
 SIGNALS:
 
@@ -57,6 +62,11 @@ if ($help) {
 my $conf = Tamper::Config::makeConfig(
   $doorPin, $pollIntervalMs,
 );
+if ($getConfig) {
+  my $confFull = Tamper::Config::configure($conf);
+  print(JSON::XS::encode_json($confFull)."\n");
+  exit;
+}
 my $tamper;
 
 ##Introduce signal handlers
