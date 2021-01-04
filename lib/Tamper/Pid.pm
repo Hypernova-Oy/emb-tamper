@@ -18,8 +18,8 @@ use Scalar::Util qw(blessed);
 
 use Proc::PID::File;
 
-use HeLog;
-my $l = bless({}, 'HeLog');
+use TaLog;
+my $l = bless({}, 'TaLog');
 
 =head1 SYNOPSIS
 

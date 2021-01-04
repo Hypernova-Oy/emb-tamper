@@ -36,8 +36,8 @@ use HiPi qw( :rpi );
 use Tamper::Config;
 use Tamper::Pid;
 
-use HeLog;
-my $l = bless({}, 'HeLog');
+use TaLog;
+my $l = bless({}, 'TaLog');
 
 sub new {
     my ($class, $params) = @_;

@@ -23,8 +23,8 @@ use Carp qw(longmess);
 use Config::Simple;
 use DateTime::TimeZone;
 
-#use HeLog; #We cannot use Log::Log4perl here, because the configuration hasn't been validated yet. Configuration controls logging. Die on errors instead.
-my $l = bless({}, 'HeLog');
+#use TaLog; #We cannot use Log::Log4perl here, because the configuration hasn't been validated yet. Configuration controls logging. Die on errors instead.
+my $l = bless({}, 'TaLog');
 
 my $configFile = "/etc/emb-tamper/daemon.conf";
 

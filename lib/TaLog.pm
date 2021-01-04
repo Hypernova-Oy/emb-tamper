@@ -2,7 +2,7 @@
 #
 # This file is part of emb-tamper.
 
-package HeLog;
+package TaLog;
 
 use Modern::Perl;
 use Carp qw(longmess);
@@ -23,7 +23,7 @@ sub AUTOLOAD {
     return if $method eq 'DESTROY';
 
     unless (blessed($l)) {
-         longmess "HeLog invoked with an unblessed reference??";
+         longmess "TaLog invoked with an unblessed reference??";
     }
     unless ($l->{_log}) {
         $l->{_log} = get_logger($l);
