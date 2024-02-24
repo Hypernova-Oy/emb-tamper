@@ -69,7 +69,7 @@ sub start {
                 $l->info ("Tamper subsided - Enclosure lid closed") if ($self->{newPowerLevel} == 0);
             }
             $self->{prevPowerLevel} = $self->{newPowerLevel};
-            Time::HiRes::usleep(Tamper::Config::pollIntervalMs());
+            Time::HiRes::usleep(Tamper::Config::pollIntervalMs()*1000);
         }
     } catch {
         $l->fatal("Main loop crashed with error: ".Data::Dumper::Dumper($_));
