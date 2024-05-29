@@ -30,7 +30,7 @@ use Try::Tiny;
 use Scalar::Util qw(blessed);
 
 use Time::HiRes;
-use HiPi::Device::GPIO;
+use HiPi::GPIO;
 use HiPi qw( :rpi );
 
 use Tamper::Config;
@@ -47,8 +47,7 @@ sub new {
     bless $self, $class;
     Tamper::Pid::checkPid($self);
 
-    $self->{gpio} = HiPi::Device::GPIO->new();
-    $self->{gpio}->export_pin(Tamper::Config::doorPin);
+    $self->{gpio} = HiPi::GPIO->new;
     $self->{doorButton} = $self->{gpio}->get_pin(Tamper::Config::doorPin);
     $self->{doorButton}->mode(RPI_MODE_INPUT);
 
